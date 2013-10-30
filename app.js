@@ -67,6 +67,6 @@ var server = restify.createServer();
 server.get('/search/:query', search);
 server.get('/poll/:stop/:line', poll);
 
-server.listen(8080, function() {
+server.listen(80, function() {
   console.log('%s listening at %s', server.name, server.url);
 });
