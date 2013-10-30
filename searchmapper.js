@@ -1,17 +1,17 @@
 var _ = require("underscore"),
 	moment = require('moment');
 
-function getLines(stop, client, callback) {
+function getPublicTransportationStops(stop, client, callback) {
 	client.get("/ReisRest/Place/GetLines/" + stop.ID, function(err, req, res, obj) {
 		callback({
+			id: stop.ID,
 			name: stop.Name,
 			district: stop.District,
-			stopId: stop.ID,
 			lines: _.map(obj, function(line) {
 				return {
 					id: line.LineID,
 					name : line.LineName,
-					trans : line.Transportation
+					type : line.Transportation
 				}
 			})
 		});
@@ -29,5 +29,5 @@ function getNextDepartures(stopId, line, client, callback) {
 	});
 }
 
-exports.getLines = getLines;
+exports.getPublicTransportationStops = getPublicTransportationStops;
 exports.getNextDepartures = getNextDepartures;

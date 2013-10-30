@@ -9,8 +9,8 @@ function search(request, response, next) {
 	var query = (request.params.query || "").toLowerCase();
 	console.log("Searching for " + query + "...");
 
-	function returnResponse(lines) {
-		response.send(lines);
+	function returnResponse(stops) {
+		response.send(stops);
 		return next();
 	}
 
@@ -20,15 +20,15 @@ function search(request, response, next) {
 			if (!obj.length) {
 				callback(obj);
 			}
-			var lines = [];
-			var numberOfReturnedLines = 0;
+			var stops = [];
+			var numberOfReturnedStops = 0;
 			_.each(obj, function(stop) {
-				searchmapper.getLines(stop, client, function(linesForStop) {
-					if (linesForStop.lines.length) {
-						lines.push(linesForStop);
+				searchmapper.getPublicTransportationStops(stop, client, function(stop) {
+					if (stop.lines.length) {
+						stops.push(stop);
 					}
-					if (++numberOfReturnedLines === obj.length) {
-						callback(lines);
+					if (++numberOfReturnedStops === obj.length) {
+						callback(stops);
 					}
 				});
 			});
@@ -73,7 +73,7 @@ server.get('/', emptyResponse);
 server.get('/search/:query', search);
 server.get('/poll/:stop/:line', poll);
 
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 8080;
 server.listen(port, function() {
   console.log('%s listening at %s', server.name, server.url);
 });
