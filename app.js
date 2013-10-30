@@ -57,6 +57,11 @@ function poll(request, response, next) {
 	});
 }
 
+function emptyResponse(request, response, next) {
+	response.send("Hei reisekompis!");
+	return next();
+}
+
 
 client = restify.createJsonClient({
   url: 'http://reis.trafikanten.no',
@@ -64,6 +69,7 @@ client = restify.createJsonClient({
 });
 
 var server = restify.createServer();
+server.get('/', emptyResponse);
 server.get('/search/:query', search);
 server.get('/poll/:stop/:line', poll);
 
