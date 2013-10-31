@@ -23,7 +23,7 @@ function search(request, response, next) {
 			var stops = [];
 			var numberOfReturnedStops = 0;
 			_.each(obj, function(stop) {
-				searchmapper.getPublicTransportationStops(stop, client, function(stop) {
+				searchmapper.getStops(stop, client, function(stop) {
 					if (stop.lines.length) {
 						stops.push(stop);
 					}

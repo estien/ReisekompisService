@@ -1,7 +1,7 @@
 var _ = require("underscore"),
 	moment = require('moment');
 
-function getPublicTransportationStops(stop, client, callback) {
+function getStops(stop, client, callback) {
 	client.get("/ReisRest/Place/GetLines/" + stop.ID, function(err, req, res, obj) {
 		callback({
 			id: stop.ID,
@@ -29,5 +29,5 @@ function getNextDepartures(stopId, line, client, callback) {
 	});
 }
 
-exports.getPublicTransportationStops = getPublicTransportationStops;
+exports.getStops = getStops;
 exports.getNextDepartures = getNextDepartures;
