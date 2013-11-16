@@ -17,7 +17,7 @@ function search(request, response, next) {
 
 	function findStops(callback) {
 		var encodedSearchQuery = encodeURIComponent(query);
-		stopService.findStops(encodedSearchQuery, callback);
+		stopService.findStops(encodedSearchQuery, cacheHelper, callback);
 	}
 
 

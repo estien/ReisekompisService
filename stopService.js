@@ -7,7 +7,7 @@ var StopService = function(client) {
 
 	self.client = client;
 
-	self.findStops = function ( query, callback) {
+	self.findStops = function (query, cacheHelper, callback) {
 		self.client.get("/ReisRest/Place/Autocomplete/" + query , function(err, req, res, foundStops) {
 			if (!foundStops.length) {
 				callback([]);
@@ -15,14 +15,23 @@ var StopService = function(client) {
 			var stops = [];
 			var numberOfReturnedStops = 0;
 			_.each(foundStops, function(stop) {
-				getStopWithLines(stop, function(stopWithLines) {
+
+				function stopWithLines(stopWithLines) {
 					if (stopWithLines.lines.length) {
 						stops.push(stopWithLines);
 					}
 					if (++numberOfReturnedStops === foundStops.length) {
 						callback(stops);
 					}
-				});
+				}
+
+				cacheHelper.get({
+					key: "stop:" + stop.ID,
+					getter: function(callback) {
+						getStopWithLines(stop, callback);
+					},
+					callback: stopWithLines
+				})
 			});
 		});
 	}
