@@ -1,9 +1,10 @@
 require("./config")
-var searchmapper = require("./searchmapper"),
+var StopService = require("./stopService"),
 	cacheHelper = require("./cacheHelper"),
 	restify = require('restify'),
 	_ = require("underscore"),
-	client;
+	client,
+	stopService;
 
 function search(request, response, next) {
 	var query = (request.params.query || "").toLowerCase();
@@ -16,24 +17,11 @@ function search(request, response, next) {
 
 	function findStops(callback) {
 		var encodedSearchQuery = encodeURIComponent(query);
-		client.get("/ReisRest/Place/Autocomplete/" + encodedSearchQuery , function(err, req, res, foundStops) {
-			if (!foundStops.length) {
-				callback([]);
-			}
-			var stops = [];
-			var numberOfReturnedStops = 0;
-			_.each(foundStops, function(stop) {
-				searchmapper.getStopWithLines(stop, client, function(stopWithLines) {
-					if (stopWithLines.lines.length) {
-						stops.push(stopWithLines);
-					}
-					if (++numberOfReturnedStops === foundStops.length) {
-						callback(stops);
-					}
-				});
-			});
-		});
+		stopService.findStops(encodedSearchQuery, callback);
 	}
+
+
+
 
 	if(!query || query.length < 4) {
 		returnResponse([]);
@@ -51,7 +39,7 @@ function search(request, response, next) {
 function poll(request, response, next) {
 	var stopId = request.params.stop,
 		line = request.params.line;
-	searchmapper.getNextDepartures(stopId, line, client, function(departures) {
+	stopService.getNextDepartures(stopId, line, function(departures) {
 		response.send(departures);
 		return next();
 	});
@@ -68,6 +56,8 @@ client = restify.createJsonClient({
   version: '*'
 }
 );
+
+stopService = new StopService.StopService(client);
 
 var server = restify.createServer();
 server.get('/', emptyResponse);
