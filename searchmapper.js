@@ -1,13 +1,14 @@
 var _ = require("underscore"),
 	moment = require('moment');
 
-function getStops(stop, client, callback) {
-	client.get("/ReisRest/Place/GetLines/" + stop.ID, function(err, req, res, obj) {
+function getStopWithLines(stop, client, callback) {
+	client.get("/ReisRest/Place/GetLines/" + stop.ID, function(err, req, res, lines) {
+
 		callback({
 			id: stop.ID,
 			name: stop.Name,
 			district: stop.District,
-			lines: _.map(obj, function(line) {
+			lines: _.map(lines, function(line) {
 				return {
 					id: line.LineID,
 					name : line.LineName,
@@ -29,5 +30,5 @@ function getNextDepartures(stopId, line, client, callback) {
 	});
 }
 
-exports.getStops = getStops;
+exports.getStopWithLines = getStopWithLines;
 exports.getNextDepartures = getNextDepartures;

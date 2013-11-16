@@ -16,18 +16,18 @@ function search(request, response, next) {
 
 	function findStops(callback) {
 		var encodedSearchQuery = encodeURIComponent(query);
-		client.get("/ReisRest/Place/Autocomplete/" + encodedSearchQuery , function(err, req, res, obj) {
-			if (!obj.length) {
-				callback(obj);
+		client.get("/ReisRest/Place/Autocomplete/" + encodedSearchQuery , function(err, req, res, foundStops) {
+			if (!foundStops.length) {
+				callback([]);
 			}
 			var stops = [];
 			var numberOfReturnedStops = 0;
-			_.each(obj, function(stop) {
-				searchmapper.getStops(stop, client, function(stop) {
-					if (stop.lines.length) {
-						stops.push(stop);
+			_.each(foundStops, function(stop) {
+				searchmapper.getStopWithLines(stop, client, function(stopWithLines) {
+					if (stopWithLines.lines.length) {
+						stops.push(stopWithLines);
 					}
-					if (++numberOfReturnedStops === obj.length) {
+					if (++numberOfReturnedStops === foundStops.length) {
 						callback(stops);
 					}
 				});
@@ -66,7 +66,8 @@ function emptyResponse(request, response, next) {
 client = restify.createJsonClient({
   url: 'http://reis.trafikanten.no',
   version: '*'
-});
+}
+);
 
 var server = restify.createServer();
 server.get('/', emptyResponse);
