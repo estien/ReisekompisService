@@ -1,6 +1,7 @@
-require("./config")
+
 var StopService = require("./stopService"),
 	cacheHelper = require("./cacheHelper"),
+	config = require("./config"),
 	restify = require('restify'),
 	_ = require("underscore"),
 	client,
@@ -62,7 +63,24 @@ function pollStops(request, response, next) {
 			result.push(departures);
 
 			if (++numberOfReturnedStops === numberOfStops) {
-				response.send(_.flatten(result));
+
+				var lines = {};
+
+				_.chain(result)
+					.flatten()
+					.sortBy(function(departure) { return departure.time; })
+					.each( function(line) {
+						var lineKey = line.id + "";
+						if(!lines[lineKey])  lines[lineKey] = [];
+						if(lines[lineKey].length < config.numDeparturesPerLine) lines[lineKey].push(line);
+					});
+
+				var finalResult = _.chain(lines)
+									.map(function(line) { return line; })
+									.flatten()
+									.sortBy(function(line) { return line.time; }).value();
+
+				response.send(finalResult);
 				return next();
 			}
 		});

@@ -1,0 +1,1 @@
+exports.numDeparturesPerLine = 4;
