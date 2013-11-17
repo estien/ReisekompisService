@@ -51,7 +51,7 @@ var StopService = function(client) {
 					id : parseInt(departure.LineRef, 10),
 					stopId : parseInt(stopId, 10),
 					destination: departure.DestinationDisplay,
-					time: moment(departure.AimedDepartureTime).format("YYYY-MM-DDTHH:mm:ss.SSSZ")
+					time: moment(departure.AimedDepartureTime).format("YYYY-MM-DDTHH:mm:ssZ")
 				}
 			}));
 
