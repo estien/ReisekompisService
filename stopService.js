@@ -45,10 +45,11 @@ var StopService = function(client) {
 		}
 
 		self.client.get("/ReisRest/RealTime/GetAllDepartures/" + stopId, function(err, req, res, departures) {
-			
+
 			callback(_.map(_.filter(departures, filterDesired), function(departure) {
 				return {
-					stopId : parseInt(stopId),
+					id : parseInt(departure.LineRef, 10),
+					stopId : parseInt(stopId, 10),
 					destination: departure.DestinationDisplay,
 					time: moment(departure.AimedDepartureTime).format("YYYY-MM-DDTHH:mm:ss.SSSZ")
 				}
