@@ -9,9 +9,11 @@ var StopService = function(client) {
 
 	self.findStops = function (query, cacheHelper, callback) {
 		self.client.get("/ReisRest/Place/Autocomplete/" + query , function(err, req, res, foundStops) {
+
 			if (!foundStops.length) {
 				callback([]);
 			}
+			
 			var stops = [];
 			var numberOfReturnedStops = 0;
 			_.each(foundStops, function(stop) {
@@ -36,14 +38,22 @@ var StopService = function(client) {
 		});
 	}
 
-	self.getNextDepartures = function (stopId, line, callback) {
-		self.client.get("/ReisRest/RealTime/GetAllDepartures/" + stopId, function(err, req, res, obj) {
-			callback(_.map(_.first(_.where(obj, { LineRef: line }), 5), function(departure) {
+	self.getNextDepartures = function (stopId, lines, callback) {
+		
+		function filterDesired(departure) {
+			return _.contains(lines, departure.LineRef);
+		}
+
+		self.client.get("/ReisRest/RealTime/GetAllDepartures/" + stopId, function(err, req, res, departures) {
+			
+			callback(_.map(_.filter(departures, filterDesired), function(departure) {
 				return {
+					stopId : parseInt(stopId),
 					destination: departure.DestinationDisplay,
 					time: moment(departure.AimedDepartureTime).format("YYYY-MM-DDTHH:mm:ss.SSSZ")
 				}
 			}));
+
 		});
 	}
 
