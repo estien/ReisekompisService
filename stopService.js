@@ -1,5 +1,6 @@
 var _ = require("underscore"),
-	moment = require('moment');
+	moment = require('moment'),
+	async = require('async');
 
 
 var StopService = function(client) {

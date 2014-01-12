@@ -5,7 +5,9 @@
     "restify": "2.6.0",
     "memory-cache" : "0.0.5",
     "moment" : "2.4.0",
-    "underscore" : "1.5.2"
+    "underscore" : "1.5.2",
+	  "async" : "0.2.9",
+	  "nodemon" : "1.0.8"
 
   },
   "engines": {
