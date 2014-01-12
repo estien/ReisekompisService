@@ -2,7 +2,6 @@
 var restify = require('restify'),
 	routing = require('./lib/routing');
 
-
 var server = restify.createServer();
 server.use(restify.bodyParser());
 
