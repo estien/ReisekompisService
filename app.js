@@ -1,21 +1,7 @@
 
-var StopService = require("./stopService"),
-	cacheHelper = require("./cacheHelper"),
-	config = require("./config"),
-	restify = require('restify'),
-	_ = require("underscore"),
-	client,
-	stopService;
+var restify = require('restify'),
+	routing = require('./lib/routing');
 
-var routing = require('./lib/routing');
-
-client = restify.createJsonClient({
-	  url: 'http://reis.trafikanten.no',
-	  version: '*'
-	}
-);
-
-stopService = new StopService.StopService(client);
 
 var server = restify.createServer();
 server.use(restify.bodyParser());
